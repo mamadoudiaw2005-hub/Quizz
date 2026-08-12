@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Culture G - Le Jeu Ultime</title>
+    <!-- Content Security Policy pour sécuriser le site -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:;">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Arrière-plan animé -->
+    <div class="background-animation">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <!-- Conteneur principal Glassmorphism -->
+    <div class="glass-container">
+        
+        <!-- ÉCRAN D'ACCUEIL -->
+        <section id="screen-home" class="screen active">
+            <h1 class="glitch" data-text="Culture G">Culture G</h1>
+            <p class="subtitle">Défi Ultime : Surpasse tes limites.</p>
+            
+            <div class="mode-selection">
+                <div class="mode-card" onclick="app.selectMode('solo')">
+                    <div class="mode-icon">👤</div>
+                    <h3>Mode Solo</h3>
+                    <p>Entraîne-toi et teste tes connaissances seul.</p>
+                </div>
+                <div class="mode-card" onclick="app.selectMode('group')">
+                    <div class="mode-icon">👥</div>
+                    <h3>Mode Équipes</h3>
+                    <p>Affronte tes amis dans des duels intenses.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ÉCRAN DES ÉTAPES (SOLO) -->
+        <section id="screen-solo-stages" class="screen hidden">
+            <div class="stages-header">
+                <h2>Parcours d'Apprentissage</h2>
+                <button class="btn icon-btn" onclick="app.showScreen('screen-home')">❌</button>
+            </div>
+            <div class="stage-path" id="stages-container">
+                <!-- Généré dynamiquement -->
+            </div>
+        </section>
+
+        <!-- SÉLECTION DU THÈME -->
+        <section id="screen-themes" class="screen hidden">
+            <h2>Choisis ton domaine</h2>
+            <div class="themes-grid">
+                <div class="theme-card" onclick="app.selectTheme('geographie')">
+                    <img src="images/geo_theme.png" alt="Géo">
+                    <h3>Géographie</h3>
+                </div>
+                <div class="theme-card" onclick="app.selectTheme('mathematiques')">
+                    <img src="images/math_theme.png" alt="Maths">
+                    <h3>Mathématiques</h3>
+                </div>
+                <div class="theme-card" onclick="app.selectTheme('physique')">
+                    <img src="images/physics_theme.png" alt="Physique">
+                    <h3>Physique</h3>
+                </div>
+                <div class="theme-card" onclick="app.selectTheme('francais')">
+                    <img src="images/french_theme.png" alt="Français">
+                    <h3>Français</h3>
+                </div>
+                <div class="theme-card" onclick="app.selectTheme('culinaire')">
+                    <img src="images/culinary_theme.png" alt="Cuisine">
+                    <h3>Culinaire</h3>
+                </div>
+                <div class="theme-card" onclick="app.selectTheme('informatique')">
+                    <div class="theme-icon">💻</div>
+                    <h3>Informatique</h3>
+                </div>
+                <div class="theme-card mix-theme" onclick="app.selectTheme('mix')">
+                    <div class="theme-icon">🌪️</div>
+                    <h3>Mix Total</h3>
+                </div>
+            </div>
+            <button class="btn text-btn" onclick="app.showScreen('screen-home')">Retour</button>
+        </section>
+
+        <!-- CONFIGURATION EQUIPES -->
+        <section id="screen-setup" class="screen hidden">
+            <h2>Configuration des équipes</h2>
+            <div class="setup-form">
+                <div class="team-input">
+                    <label>Nom Équipe 1</label>
+                    <input type="text" id="team1-name" value="Équipe 1" />
+                </div>
+                <div class="team-input">
+                    <label>Nom Équipe 2</label>
+                    <input type="text" id="team2-name" value="Équipe 2" />
+                </div>
+                <button class="btn primary-btn" onclick="app.startGame()">Commencer le duel !</button>
+                <button class="btn text-btn" onclick="app.showScreen('screen-themes')">Retour aux thèmes</button>
+            </div>
+        </section>
+
+        <!-- ÉCRAN DE JEU -->
+        <section id="screen-game" class="screen hidden">
+            
+            <!-- Header du jeu : Scores et Info -->
+            <div class="game-header">
+                <button class="btn return-btn" onclick="app.quitGame()">↩ Retour</button>
+                <div id="game-info" class="game-info">
+                    <span id="current-stage-badge" class="badge">Étape</span>
+                    <span id="current-player-turn" class="player-turn">À toi de jouer !</span>
+                </div>
+                
+                <div id="score-board" class="score-board">
+                    <!-- Généré dynamiquement -->
+                </div>
+            </div>
+
+            <!-- Barre de progression / Timer -->
+            <div class="timer-container">
+                <div id="timer-bar" class="timer-bar"></div>
+            </div>
+
+            <!-- Zone de question -->
+            <div class="question-container">
+                <h3 id="question-text" class="question-text">Chargement de la question...</h3>
+                
+                <!-- Conteneur pour l'image -->
+                <div id="image-container" class="image-container hidden">
+                    <img id="question-image" src="" alt="Illustration">
+                </div>
+                
+                <!-- Indice -->
+                <div id="clues-container" class="clues-container hidden"></div>
+
+                <!-- Grille de réponses (QCM) -->
+                <div id="answers-grid" class="answers-grid">
+                    <!-- Boutons générés dynamiquement -->
+                </div>
+
+                <!-- Conteneur pour l'association -->
+                <div id="association-grid" class="association-grid hidden">
+                    <div class="col-a" id="assoc-col-a"></div>
+                    <div class="col-b" id="assoc-col-b"></div>
+                </div>
+            </div>
+
+            <div class="game-footer">
+                <button id="next-btn" class="btn secondary-btn hidden" onclick="app.nextQuestion()">Suivant ➔</button>
+            </div>
+        </section>
+
+        <!-- ÉCRAN DE RÉSULTATS -->
+        <section id="screen-results" class="screen hidden">
+            <h2>Résultats Finaux</h2>
+            <div id="final-scores" class="final-scores">
+                <!-- Généré dynamiquement -->
+            </div>
+            
+            <div id="cesar-feedback" class="cesar-feedback">
+                <h3 id="feedback-title">Alors, combien sur 20 ?</h3>
+                <p id="feedback-text" class="feedback-text"></p>
+            </div>
+
+            <button class="btn primary-btn" onclick="app.resetGame()">Rejouer</button>
+        </section>
+        
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
